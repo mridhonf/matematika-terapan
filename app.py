@@ -28,8 +28,8 @@ if menu == "Optimasi Produksi (Linear Programming)":
     st.title("Optimasi Produksi Motor")
     st.write("Model Linear Programming untuk memaksimalkan keuntungan produksi dua jenis motor: Sport dan Bebek.")
 
-    profit_sport = st.number_input("Keuntungan per unit Motor Sport (juta)", value=5.0)
-    profit_bebek = st.number_input("Keuntungan per unit Motor Bebek (juta)", value=3.0)
+    profit_sport = st.number_input("Keuntungan per unit Motor Sport (juta)", value=0)
+    profit_bebek = st.number_input("Keuntungan per unit Motor Matic (juta)", value=0)
     waktu_perakitan = [3, 2]  # jam/unit
     waktu_mesin = [2, 1]      # jam/unit
     total_perakitan = st.slider("Total waktu perakitan tersedia (jam)", 0, 500, 240)
@@ -44,7 +44,7 @@ if menu == "Optimasi Produksi (Linear Programming)":
 
     if res.success:
         x1, x2 = res.x
-        st.success(f"Produksi optimal: {x1:.2f} unit Sport dan {x2:.2f} unit Bebek")
+        st.success(f"Produksi optimal: {x1:.2f} unit Sport dan {x2:.2f} unit Matic")
         st.write(f"Total keuntungan maksimum: Rp {(res.fun * -1):,.2f} juta")
 
         # Visualisasi
