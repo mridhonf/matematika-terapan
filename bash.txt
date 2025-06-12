@@ -1,1 +1,5 @@
-pip install streamlit matplotlib numpy scipy pulp
+pip install streamlit
+matplotlib
+numpy
+scipy
+pulp
