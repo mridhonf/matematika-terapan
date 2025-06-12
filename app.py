@@ -1,3 +1,9 @@
+import streamlit as st
+import numpy as np
+import matplotlib.pyplot as plt
+from scipy.optimize import linprog
+from scipy.stats import expon
+import math
 
 st.set_page_config(page_title="Aplikasi Model Matematika Industri", layout="wide")
 
