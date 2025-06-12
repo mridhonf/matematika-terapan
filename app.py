@@ -1,6 +1,6 @@
 import streamlit as st
 import numpy as np
-import matplotlib.pyplot as plt
+import matplotlib as plt
 from scipy.optimize import linprog
 from scipy.stats import expon
 import math
