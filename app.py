@@ -124,29 +124,45 @@ elif menu == "Model Antrian (M/M/1)":
 
 # ========== MENU 4: MODEL LAINNYA ==========
 elif menu == "Model Matematika Lainnya":
-    st.title("Break-even Point (BEP) Analisis")
-    st.write("Analisis titik impas produksi motor.")
+    st.title("Model Proyeksi Permintaan Motor")
+    st.write("Memprediksi permintaan motor di masa depan menggunakan regresi linear sederhana.")
 
-    fixed_cost = st.number_input("Biaya tetap (Rp)", value=100_000_000.0)
-    variable_cost = st.number_input("Biaya variabel per unit (Rp)", value=3_000_000.0)
-    selling_price = st.number_input("Harga jual per unit (Rp)", value=5_000_000.0)
+    st.markdown("Masukkan data historis penjualan:")
+    years = st.text_input("Tahun-tahun (pisahkan dengan koma)", "2019,2020,2021,2022,2023")
+    sales = st.text_input("Jumlah terjual per tahun (unit)", "2000,2200,2500,2700,3000")
 
-    if selling_price > variable_cost:
-        BEP = fixed_cost / (selling_price - variable_cost)
-        st.success(f"Titik impas: {BEP:.2f} unit motor")
+    try:
+        X = np.array([int(x) for x in years.split(",")])
+        Y = np.array([int(y) for y in sales.split(",")])
 
-        # Visualisasi
-        q = np.linspace(0, BEP * 2, 100)
-        revenue = selling_price * q
-        cost = fixed_cost + variable_cost * q
+        if len(X) != len(Y):
+            st.error("Jumlah tahun dan data penjualan harus sama.")
+        else:
+            # Regresi Linear Sederhana
+            coef = np.polyfit(X, Y, 1)  # slope, intercept
+            a, b = coef[1], coef[0]
 
-        fig, ax = plt.subplots()
-        ax.plot(q, revenue, label='Pendapatan')
-        ax.plot(q, cost, label='Total Biaya')
-        ax.axvline(BEP, color='red', linestyle='--', label='Break-even Point')
-        ax.set_xlabel("Jumlah Unit")
-        ax.set_ylabel("Rp")
-        ax.legend()
+            tahun_pred = st.number_input("Prediksi permintaan untuk tahun:", value=2025)
+            prediksi = a + b * tahun_pred
+
+            st.success(f"Prediksi permintaan untuk tahun {tahun_pred}: {prediksi:.0f} unit")
+
+            # Visualisasi
+            x_plot = np.linspace(min(X)-1, max(X)+2, 100)
+            y_plot = a + b * x_plot
+
+            fig, ax = plt.subplots()
+            ax.plot(X, Y, 'o-', label='Data Aktual')
+            ax.plot(x_plot, y_plot, 'r--', label='Regresi Linear')
+            ax.axvline(tahun_pred, color='gray', linestyle='--', label='Tahun Prediksi')
+            ax.axhline(prediksi, color='green', linestyle=':', label='Prediksi')
+            ax.set_xlabel("Tahun")
+            ax.set_ylabel("Jumlah Terjual (unit)")
+            ax.legend()
+            st.pyplot(fig)
+    except:
+        st.error("Pastikan input berupa angka dan dipisahkan dengan koma.")
+
         st.pyplot(fig)
     else:
         st.error("Harga jual harus lebih besar dari biaya variabel.")
