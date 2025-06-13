@@ -66,27 +66,39 @@ if menu == "Optimasi Produksi (Linear Programming)":
 
 # ========== MENU 2: EOQ ==========
 elif menu == "Model Persediaan (EOQ)":
-    st.title("Model Persediaan EOQ")
-    st.write("Menghitung Economic Order Quantity untuk komponen motor.")
+    st.title("Model Persediaan (EOQ) - Economic Order Quantity")
 
-    D = st.number_input("Permintaan tahunan (unit)", value=1000)
-    S = st.number_input("Biaya pemesanan per pesanan (Rp)", value=500000.0)
-    H = st.number_input("Biaya penyimpanan per unit per tahun (Rp)", value=10000.0)
+    st.sidebar.subheader("📦 Petunjuk Penggunaan")
+    st.sidebar.markdown(
+        "- Masukkan nilai permintaan tahunan (D)\n"
+        "- Masukkan biaya pemesanan per pesanan (S)\n"
+        "- Masukkan biaya penyimpanan per unit per tahun (H)"
+    )
 
-    EOQ = np.sqrt((2 * D * S) / H)
-    st.success(f"EOQ: {EOQ:.2f} unit per pesanan")
+    # Input
+    D = st.number_input("Permintaan Tahunan (unit)", value=1000)
+    S = st.number_input("Biaya Pemesanan per Pesanan (Rp)", value=50000)
+    H = st.number_input("Biaya Penyimpanan per Unit per Tahun (Rp)", value=2000)
 
-    # Visualisasi
-    Q = np.linspace(1, 2 * EOQ, 100)
-    TC = (D / Q) * S + (Q / 2) * H
+    if D > 0 and S > 0 and H > 0:
+        # Hitung EOQ
+        EOQ = np.sqrt((2 * D * S) / H)
+        st.success(f"EOQ Optimal: {EOQ:.2f} unit per pesanan")
 
-    fig, ax = plt.subplots()
-    ax.plot(Q, TC, label='Total Cost')
-    ax.axvline(EOQ, color='red', linestyle='--', label='EOQ')
-    ax.set_xlabel("Jumlah Pesan (Q)")
-    ax.set_ylabel("Total Biaya (Rp)")
-    ax.legend()
-    st.pyplot(fig)
+        # Visualisasi Total Biaya
+        Q = np.arange(1, int(2 * EOQ))
+        total_biaya = (D / Q) * S + (Q / 2) * H
+
+        fig, ax = plt.subplots()
+        ax.plot(Q, total_biaya, label='Total Biaya', color='blue')
+        ax.axvline(EOQ, color='red', linestyle='--', label='EOQ Optimal')
+        ax.set_xlabel("Jumlah Pesanan (Q)")
+        ax.set_ylabel("Total Biaya (Rp)")
+        ax.set_title("Grafik Total Biaya vs Jumlah Pesanan")
+        ax.legend()
+        st.pyplot(fig)
+    else:
+        st.warning("Masukkan semua nilai input dengan benar.")
 
 # ========== MENU 3: ANTRIAN M/M/1 ==========
 elif menu == "Model Antrian (M/M/1)":
