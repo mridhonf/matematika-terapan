@@ -24,7 +24,7 @@ st.sidebar.markdown(
 )
 
 # ========== MENU 1: LINEAR PROGRAMMING ==========
-elif menu == "Optimasi Produksi (Linear Programing)":
+if menu == "Optimasi Produksi (Linear Programing)":
     st.title("Optimasi Produksi Motor")
 
     st.sidebar.subheader("📌 Petunjuk")
