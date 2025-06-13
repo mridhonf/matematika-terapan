@@ -103,40 +103,53 @@ elif menu == "Model Persediaan (EOQ)":
 
 # ========== MENU 3: ANTRIAN M/M/1 ==========
 elif menu == "Model Antrian (M/M/1)":
-    st.title("Model Antrian M/M/1")
-    st.write("Estimasi performa sistem antrian untuk proses pengecekan kualitas motor.")
+    st.title("Model Antrian (M/M/1) - Produksi Motor")
 
-    lambd = st.number_input("Laju kedatangan pelanggan (motor/jam)", value=10.0)
-    mu = st.number_input("Laju pelayanan (motor/jam)", value=15.0)
+    st.sidebar.subheader("📌 Petunjuk")
+    st.sidebar.markdown(
+        "- Masukkan laju kedatangan pelanggan (λ)\n"
+        "- Masukkan laju pelayanan per pelanggan (μ)\n"
+        "- Sistem akan menghitung kinerja antrian M/M/1"
+    )
 
-    if mu > lambd:
-        rho = lambd / mu
-        L = rho / (1 - rho)
-        Lq = rho**2 / (1 - rho)
-        W = 1 / (mu - lambd)
-        Wq = rho / (mu - lambd)
+    # Input dari pengguna
+    lambd = st.number_input("Laju Kedatangan (λ) pelanggan per jam", value=5.0)
+    mu = st.number_input("Laju Pelayanan (μ) pelanggan per jam", value=8.0)
 
-        st.success(f"Utilisasi server: {rho:.2f}")
-        st.write(f"Rata-rata jumlah motor dalam sistem: {L:.2f}")
-        st.write(f"Rata-rata jumlah dalam antrian: {Lq:.2f}")
-        st.write(f"Waktu rata-rata dalam sistem: {W:.2f} jam")
-        st.write(f"Waktu rata-rata dalam antrian: {Wq:.2f} jam")
+    if lambd > 0 and mu > 0 and lambd < mu:
+        # Rumus dasar model antrian M/M/1
+        rho = lambd / mu                  # Tingkat utilisasi server
+        L = rho / (1 - rho)               # Rata-rata jumlah pelanggan dalam sistem
+        Lq = rho**2 / (1 - rho)           # Rata-rata jumlah pelanggan dalam antrean
+        W = 1 / (mu - lambd)              # Waktu rata-rata dalam sistem
+        Wq = lambd / (mu * (mu - lambd))  # Waktu rata-rata dalam antrean
 
-        # Visualisasi
+        # Output hasil perhitungan
+        st.subheader("📊 Hasil Analisis Antrian M/M/1")
+        st.write(f"Tingkat Utilisasi Server (ρ): **{rho:.2f}**")
+        st.write(f"Rata-rata Pelanggan dalam Sistem (L): **{L:.2f}**")
+        st.write(f"Rata-rata Pelanggan dalam Antrian (Lq): **{Lq:.2f}**")
+        st.write(f"Waktu Rata-rata dalam Sistem (W): **{W:.2f} jam**")
+        st.write(f"Waktu Rata-rata dalam Antrian (Wq): **{Wq:.2f} jam**")
+
+        # Visualisasi batang
+        st.subheader("📉 Visualisasi Antrian")
+        labels = ["L", "Lq", "W", "Wq"]
+        values = [L, Lq, W, Wq]
+
         fig, ax = plt.subplots()
-        rho_range = np.linspace(0.01, 0.99, 100)
-        Lq_range = rho_range**2 / (1 - rho_range)
-        ax.plot(rho_range, Lq_range)
-        ax.axvline(rho, color='red', linestyle='--', label='Utilisasi Sekarang')
-        ax.set_xlabel("Utilisasi (ρ)")
-        ax.set_ylabel("Rata-rata Jumlah dalam Antrian (Lq)")
-        ax.legend()
+        ax.bar(labels, values, color=["blue", "orange", "green", "red"])
+        ax.set_ylabel("Nilai")
+        ax.set_title("Grafik Parameter Antrian")
         st.pyplot(fig)
+
+    elif lambd >= mu:
+        st.error("⛔ Laju kedatangan harus lebih kecil dari laju pelayanan (λ < μ) agar sistem stabil.")
     else:
-        st.error("Laju pelayanan harus lebih tinggi dari laju kedatangan (μ > λ)")
+        st.info("Masukkan nilai λ dan μ yang valid untuk memulai perhitungan.")
 
 # ========== MENU 4: MODEL LAINNYA ==========
-elif menu == "Model Matematika Lainnya":
+elif menu == "Model Planning Permintaan Motor":
     st.title("Model Proyeksi Permintaan Motor")
     st.write("Memprediksi permintaan motor di masa depan menggunakan regresi linear sederhana.")
 
@@ -154,10 +167,10 @@ elif menu == "Model Matematika Lainnya":
             # Regresi Linear Sederhana
             coef = np.polyfit(X, Y, 1)  # slope, intercept
             a, b = coef[1], coef[0]
-
-            tahun_pred = st.number_input("Prediksi permintaan untuk tahun:", value=2025)
+            #fungsi
+            tahun_pred = st.number_input("Prediksi permintaan untuk tahun:", value=0)
             prediksi = a + b * tahun_pred
-
+            #output dari perhitungan
             st.success(f"Prediksi permintaan untuk tahun {tahun_pred}: {prediksi:.0f} unit")
 
             # Visualisasi
