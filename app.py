@@ -110,32 +110,36 @@ elif menu == "Model Antrian (M/M/1)":
         "- Masukkan laju kedatangan pelanggan (λ)\n"
         "- Masukkan laju pelayanan per pelanggan (μ)\n"
         "- Sistem akan menghitung kinerja antrian M/M/1"
+        "- RPS = Rata Rata Jumlah Pelanggan Dalam Sistem"
+        "- RPA = Rata Rata Jumlah Pelanggan Dalam Antrean"
+        "- WRS = Waktu Rata Rata dalam Sistem"
+        "- WPA = Waktu Rata Rata dalam Antrean"
     )
 
     # Input dari pengguna
-    lambd = st.number_input("Laju Kedatangan (λ) pelanggan per jam", value=5.0)
-    mu = st.number_input("Laju Pelayanan (μ) pelanggan per jam", value=8.0)
+    lambd = st.number_input("Berapa banyak motor pelanggan yang datang per jam nya (λ)", value=5.0)
+    mu = st.number_input("Laju Pelayanan pelanggan per jam nya (μ)", value=8.0)
 
     if lambd > 0 and mu > 0 and lambd < mu:
         # Rumus dasar model antrian M/M/1
         rho = lambd / mu                  # Tingkat utilisasi server
-        L = rho / (1 - rho)               # Rata-rata jumlah pelanggan dalam sistem
-        Lq = rho**2 / (1 - rho)           # Rata-rata jumlah pelanggan dalam antrean
-        W = 1 / (mu - lambd)              # Waktu rata-rata dalam sistem
-        Wq = lambd / (mu * (mu - lambd))  # Waktu rata-rata dalam antrean
+        RPS = rho / (1 - rho)               # Rata-rata jumlah pelanggan dalam sistem
+        RPA = rho**2 / (1 - rho)           # Rata-rata jumlah pelanggan dalam antrean
+        WRS = 1 / (mu - lambd)              # Waktu rata-rata dalam sistem
+        WRA = lambd / (mu * (mu - lambd))  # Waktu rata-rata dalam antrean
 
         # Output hasil perhitungan
         st.subheader("📊 Hasil Analisis Antrian M/M/1")
         st.write(f"Tingkat Utilisasi Server (ρ): **{rho:.2f}**")
-        st.write(f"Rata-rata Pelanggan dalam Sistem (L): **{L:.2f}**")
-        st.write(f"Rata-rata Pelanggan dalam Antrian (Lq): **{Lq:.2f}**")
-        st.write(f"Waktu Rata-rata dalam Sistem (W): **{W:.2f} jam**")
-        st.write(f"Waktu Rata-rata dalam Antrian (Wq): **{Wq:.2f} jam**")
+        st.write(f"Rata-rata Pelanggan dalam Sistem (RPS): **{L:.2f}**")
+        st.write(f"Rata-rata Pelanggan dalam Antrian (RPA): **{Lq:.2f}**")
+        st.write(f"Waktu Rata-rata dalam Sistem (WRS): **{W:.2f} jam**")
+        st.write(f"Waktu Rata-rata dalam Antrian (WRA): **{Wq:.2f} jam**")
 
         # Visualisasi batang
         st.subheader("📉 Visualisasi Antrian")
-        labels = ["L", "Lq", "W", "Wq"]
-        values = [L, Lq, W, Wq]
+        labels = ["RPS", "RPA", "WRS", "Wq"]
+        values = [RPS, RPA, WRS, WRA]
 
         fig, ax = plt.subplots()
         ax.bar(labels, values, color=["blue", "orange", "green", "red"])
