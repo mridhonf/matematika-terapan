@@ -131,10 +131,10 @@ elif menu == "Model Antrian (M/M/1)":
         # Output hasil perhitungan
         st.subheader("📊 Hasil Analisis Antrian M/M/1")
         st.write(f"Tingkat Utilisasi Server (ρ): **{rho:.2f}**")
-        st.write(f"Rata-rata Pelanggan dalam Sistem (RPS): **{L:.2f}**")
-        st.write(f"Rata-rata Pelanggan dalam Antrian (RPA): **{Lq:.2f}**")
-        st.write(f"Waktu Rata-rata dalam Sistem (WRS): **{W:.2f} jam**")
-        st.write(f"Waktu Rata-rata dalam Antrian (WRA): **{Wq:.2f} jam**")
+        st.write(f"Rata-rata Pelanggan dalam Sistem (RPS): **{RPS:.2f}**")
+        st.write(f"Rata-rata Pelanggan dalam Antrian (RPA): **{RPA:.2f}**")
+        st.write(f"Waktu Rata-rata dalam Sistem (WRS): **{WRS:.2f} jam**")
+        st.write(f"Waktu Rata-rata dalam Antrian (WRA): **{WRA:.2f} jam**")
 
         # Visualisasi batang
         st.subheader("📉 Visualisasi Antrian")
