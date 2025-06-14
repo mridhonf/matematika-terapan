@@ -26,83 +26,84 @@ st.sidebar.markdown(
 
 # ========== MENU 1: LINEAR PROGRAMMING ==========
 # Dokumentasi / instruksi di sidebar
-st.sidebar.subheader("📌 Petunjuk Penggunaan")
-st.sidebar.markdown(
-    "- Masukkan keuntungan per unit motor\n"
-    "- Masukkan total jam kerja dan jam mesin\n"
-    "- Sistem akan menghitung jumlah produksi optimal"
-)
+if menu == "Optimasi Produksi (Linear Programming)":
+    st.sidebar.subheader("📌 Petunjuk Penggunaan")
+    st.sidebar.markdown(
+        "- Masukkan keuntungan per unit motor\n"
+        "- Masukkan total jam kerja dan jam mesin\n"
+        "- Sistem akan menghitung jumlah produksi optimal"
+    )
 
 # Input user
-profit_sport = st.number_input("💰 Keuntungan per Unit Motor Sport (Rp)", value=3000000)
-profit_bebek = st.number_input("💰 Keuntungan per Unit Motor Bebek (Rp)", value=2000000)
-waktu_kerja = st.number_input("⏱️ Total Waktu Kerja (jam)", value=120)
-waktu_mesin = st.number_input("⚙️ Total Waktu Mesin (jam)", value=100)
+    profit_sport = st.number_input("💰 Keuntungan per Unit Motor Sport (Rp)", value=3000000)
+    profit_bebek = st.number_input("💰 Keuntungan per Unit Motor Bebek (Rp)", value=2000000)
+    waktu_kerja = st.number_input("⏱️ Total Waktu Kerja (jam)", value=120)
+    waktu_mesin = st.number_input("⚙️ Total Waktu Mesin (jam)", value=100)
 
 # ------------------------
 # Pemodelan Linear Programming
 # ------------------------
 
 # 1. Membuat model optimasi dengan tujuan maksimisasi keuntungan
-model = LpProblem("Optimasi_Produksi_Motor", LpMaximize)
+    model = LpProblem("Optimasi_Produksi_Motor", LpMaximize)
 
 # 2. Mendefinisikan variabel keputusan: jumlah motor sport (X) dan motor bebek (Y)
-X = LpVariable("Motor_Sport", lowBound=0, cat="Continuous")
-Y = LpVariable("Motor_Bebek", lowBound=0, cat="Continuous")
+    X = LpVariable("Motor_Sport", lowBound=0, cat="Continuous")
+    Y = LpVariable("Motor_Bebek", lowBound=0, cat="Continuous")
 
 # 3. Menentukan fungsi objektif (maximize profit)
-model += profit_sport * X + profit_bebek * Y
+    model += profit_sport * X + profit_bebek * Y
 
 # 4. Menambahkan kendala waktu kerja: 3X + 2Y ≤ waktu kerja tersedia
-model += 3 * X + 2 * Y <= waktu_kerja
+    model += 3 * X + 2 * Y <= waktu_kerja
 
 # 5. Menambahkan kendala waktu mesin: 2X + 1Y ≤ waktu mesin tersedia
-model += 2 * X + 1 * Y <= waktu_mesin
+    model += 2 * X + 1 * Y <= waktu_mesin
 
 # 6. Menyelesaikan model
-model.solve()
+    model.solve()
 
 # 7. Mengambil hasil solusi
-x_val = X.varValue  # jumlah motor sport
-y_val = Y.varValue  # jumlah motor bebek
-total_profit = model.objective.value()
+    x_val = X.varValue  # jumlah motor sport
+    y_val = Y.varValue  # jumlah motor bebek
+    total_profit = model.objective.value()
 
 # ------------------------
 # Output hasil
 # ------------------------
-st.subheader("📈 Hasil Optimasi Produksi")
-st.write(f"✅ Produksi Motor Sport: **{x_val:.2f} unit**")
-st.write(f"✅ Produksi Motor Bebek: **{y_val:.2f} unit**")
-st.success(f"💵 Total Keuntungan Maksimum: **Rp {int(total_profit):,}**")
+    st.subheader("📈 Hasil Optimasi Produksi")
+    st.write(f"✅ Produksi Motor Sport: **{x_val:.2f} unit**")
+    st.write(f"✅ Produksi Motor Bebek: **{y_val:.2f} unit**")
+    st.success(f"💵 Total Keuntungan Maksimum: **Rp {int(total_profit):,}**")
 
 # ------------------------
 # Visualisasi Wilayah Solusi
 # ------------------------
 
 # Membuat titik X untuk menggambar kendala
-x_vals = np.linspace(0, waktu_kerja, 200)
+    x_vals = np.linspace(0, waktu_kerja, 200)
 
 # Menghitung batas Y dari masing-masing kendala
-y_kerja = (waktu_kerja - 3 * x_vals) / 2
-y_mesin = (waktu_mesin - 2 * x_vals) / 1
+    y_kerja = (waktu_kerja - 3 * x_vals) / 2
+    y_mesin = (waktu_mesin - 2 * x_vals) / 1
 
 # Plot wilayah solusi
-fig, ax = plt.subplots()
-ax.plot(x_vals, y_kerja, label="Kendala Waktu Kerja", color='blue')
-ax.plot(x_vals, y_mesin, label="Kendala Waktu Mesin", color='green')
+    fig, ax = plt.subplots()
+    ax.plot(x_vals, y_kerja, label="Kendala Waktu Kerja", color='blue')
+    ax.plot(x_vals, y_mesin, label="Kendala Waktu Mesin", color='green')
 
 # Arsiran solusi
-ax.fill_between(x_vals, np.minimum(y_kerja, y_mesin), 0, where=(np.minimum(y_kerja, y_mesin) > 0), alpha=0.2)
+    ax.fill_between(x_vals, np.minimum(y_kerja, y_mesin), 0, where=(np.minimum(y_kerja, y_mesin) > 0), alpha=0.2)
 
 # Titik solusi optimal
-ax.plot(x_val, y_val, 'ro', label="Solusi Optimal")
+    ax.plot(x_val, y_val, 'ro', label="Solusi Optimal")
 
 # Label grafik
-ax.set_xlabel("Motor Sport (unit)")
-ax.set_ylabel("Motor Bebek (unit)")
-ax.set_title("Wilayah Solusi dan Titik Optimal")
-ax.legend()
-st.pyplot(fig)
+    ax.set_xlabel("Motor Sport (unit)")
+    ax.set_ylabel("Motor Bebek (unit)")
+    ax.set_title("Wilayah Solusi dan Titik Optimal")
+    ax.legend()
+    st.pyplot(fig)
 # ========== MENU 2: EOQ ==========
 elif menu == "Model Persediaan (EOQ)":
     st.title("Model Persediaan (EOQ)")
