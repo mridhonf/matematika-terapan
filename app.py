@@ -27,44 +27,78 @@ st.sidebar.markdown(
 # ========== MENU 1: LINEAR PROGRAMMING ==========
 # Dokumentasi / instruksi di sidebar
 if menu == "Optimasi Produksi (Linear Programming)":
+    # Judul dan deskripsi halaman
     st.title("Optimasi Produksi Motor")
     st.write("Model Linear Programming untuk memaksimalkan keuntungan produksi dua jenis motor: Sport dan Bebek.")
 
+    # -----------------------------
+    # Input dari pengguna
+    # -----------------------------
+    # Input keuntungan per unit untuk masing-masing motor
     profit_sport = st.number_input("Keuntungan per unit Motor Sport (juta)", value=5.0)
     profit_bebek = st.number_input("Keuntungan per unit Motor Bebek (juta)", value=3.0)
-    waktu_perakitan = [3, 2]  # jam/unit
-    waktu_mesin = [2, 1]      # jam/unit
-    total_perakitan = st.slider("Total waktu perakitan tersedia perminggu nya (jam)", 0, 500, 240)
-    total_mesin = st.slider("Total waktu mesin tersedia perminggu nya (jam)", 0, 300, 180)
 
-    c = [-profit_sport, -profit_bebek]
-    A = [waktu_perakitan, waktu_mesin]
-    b = [total_perakitan, total_mesin]
-    x_bounds = (0, None)
-    
+    # Waktu produksi (konstanta) untuk masing-masing jenis motor
+    waktu_perakitan = [3, 2]  # 3 jam untuk Sport, 2 jam untuk Bebek
+    waktu_mesin = [2, 1]      # 2 jam untuk Sport, 1 jam untuk Bebek
+
+    # Input batas waktu total yang tersedia
+    total_perakitan = st.slider("Total waktu perakitan tersedia per minggu (jam)", 0, 500, 240)
+    total_mesin = st.slider("Total waktu mesin tersedia per minggu (jam)", 0, 300, 180)
+
+    # -----------------------------
+    # Menyusun model matematis LP
+    # -----------------------------
+    c = [-profit_sport, -profit_bebek]  # Fungsi tujuan (dikalikan -1 karena linprog meminimalkan)
+    A = [waktu_perakitan, waktu_mesin]  # Matriks kendala (koefisien)
+    b = [total_perakitan, total_mesin]  # Batasan kendala
+    x_bounds = (0, None)                # x ≥ 0
+
+    # -----------------------------
+    # Menyelesaikan model LP
+    # -----------------------------
     res = linprog(c, A_ub=A, b_ub=b, bounds=[x_bounds, x_bounds])
 
+    # -----------------------------
+    # Menampilkan hasil
+    # -----------------------------
     if res.success:
-        x1, x2 = res.x
+        x1, x2 = res.x  # x1 = jumlah Motor Sport, x2 = jumlah Motor Bebek
         st.success(f"Produksi optimal: {x1:.2f} unit Sport dan {x2:.2f} unit Bebek")
         st.write(f"Total keuntungan maksimum: Rp {(res.fun * -1):,.2f} juta")
 
-        # Visualisasi
+        # -----------------------------
+        # Visualisasi grafik kendala dan solusi
+        # -----------------------------
         fig, ax = plt.subplots()
-        x = np.linspace(0, 100, 100)
+
+        x = np.linspace(0, 100, 100)  # Range nilai Motor Sport
+        # Menggambar garis kendala perakitan dan mesin
         y1 = (total_perakitan - waktu_perakitan[0] * x) / waktu_perakitan[1]
         y2 = (total_mesin - waktu_mesin[0] * x) / waktu_mesin[1]
+
+        # Plot garis kendala
         ax.plot(x, y1, label='Kendala Perakitan')
         ax.plot(x, y2, label='Kendala Mesin')
+
+        # Plot titik solusi optimal
         ax.scatter(x1, x2, color='red', label='Solusi Optimal')
+
+        # Atur batas tampilan grafik agar muat
         ax.set_xlim(0, max(x1, x2) * 1.5)
         ax.set_ylim(0, max(x1, x2) * 1.5)
+
+        # Label sumbu dan legenda
         ax.set_xlabel("Motor Sport")
         ax.set_ylabel("Motor Bebek")
         ax.legend()
+
+        # Tampilkan grafik di Streamlit
         st.pyplot(fig)
+
     else:
-        st.error("Tidak ditemukan solusi optimal.")
+        # Jika tidak ditemukan solusi yang feasible
+        st.error("Tidak ditemukan solusi optimal. Periksa kembali input kendala.")
 
 # ========== MENU 2: EOQ ==========
 elif menu == "Model Persediaan (EOQ)":
