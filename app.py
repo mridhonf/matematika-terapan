@@ -193,47 +193,60 @@ elif menu == "Model Antrian (M/M/1)":
         st.info("Masukkan nilai λ dan μ yang valid untuk memulai perhitungan.")
 
 # ========== MENU 4: MODEL LAINNYA ==========
-elif menu == "Model Planning Permintaan Motor":
-    st.title("Model Proyeksi Permintaan Motor")
-    st.write("Memprediksi permintaan motor di masa depan menggunakan regresi linear sederhana.")
+elif menu == "Model Matematika Lainnya":
+    st.title("📊 Prediksi Permintaan Motor (Regresi Linear)")
 
-    st.markdown("Masukkan data historis penjualan:")
-    years = st.text_input("Tahun-tahun (pisahkan dengan koma)", "2019,2020,2021,2022,2023")
-    sales = st.text_input("Jumlah terjual per tahun (unit)", "2000,2200,2500,2700,3000")
+    st.sidebar.subheader("📌 Petunjuk")
+    st.sidebar.markdown(
+        "- Masukkan data penjualan motor di beberapa tahun terakhir\n"
+        "- Sistem akan memprediksi penjualan di tahun berikutnya"
+    )
 
+    # Input tahun dan penjualan (misalnya 5 tahun terakhir)
+    st.subheader("🗓️ Masukkan Data Penjualan Tahunan")
+    
+    tahun = st.text_input("Tahun (pisahkan dengan koma)", "2019,2020,2021,2022,2023")
+    penjualan = st.text_input("Jumlah Unit Terjual (pisahkan dengan koma)", "1000,1200,1300,1250,1400")
+
+    # Konversi input string ke list angka
     try:
-        X = np.array([int(x) for x in years.split(",")])
-        Y = np.array([int(y) for y in sales.split(",")])
+        tahun_list = list(map(int, tahun.split(",")))
+        penjualan_list = list(map(int, penjualan.split(",")))
 
-        if len(X) != len(Y):
-            st.error("Jumlah tahun dan data penjualan harus sama.")
-        else:
-            # Regresi Linear Sederhana
-            coef = np.polyfit(X, Y, 1)  # slope, intercept
-            a, b = coef[1], coef[0]
-            #fungsi
-            tahun_pred = st.number_input("Prediksi permintaan untuk tahun:", value=0)
-            prediksi = a + b * tahun_pred
-            #output dari perhitungan
-            st.success(f"Prediksi permintaan untuk tahun {tahun_pred}: {prediksi:.0f} unit")
+        # Validasi panjang data
+        if len(tahun_list) == len(penjualan_list) and len(tahun_list) >= 2:
+            import numpy as np
+            from sklearn.linear_model import LinearRegression
+            import matplotlib.pyplot as plt
 
-            # Visualisasi
-            x_plot = np.linspace(min(X)-1, max(X)+2, 100)
-            y_plot = a + b * x_plot
+            # Ubah ke array dan reshape agar sesuai input sklearn
+            X = np.array(tahun_list).reshape(-1, 1)
+            y = np.array(penjualan_list)
 
+            # Buat model regresi linear dan latih
+            model = LinearRegression()
+            model.fit(X, y)
+
+            # Prediksi tahun selanjutnya
+            tahun_prediksi = max(tahun_list) + 1
+            prediksi = model.predict([[tahun_prediksi]])
+
+            st.subheader("📈 Hasil Prediksi")
+            st.write(f"📅 Prediksi penjualan pada tahun {tahun_prediksi}: **{int(prediksi[0])} unit**")
+
+            # Visualisasi grafik regresi
+            st.subheader("📉 Grafik Tren Penjualan")
             fig, ax = plt.subplots()
-            ax.plot(X, Y, 'o-', label='Data Aktual')
-            ax.plot(x_plot, y_plot, 'r--', label='Regresi Linear')
-            ax.axvline(tahun_pred, color='gray', linestyle='--', label='Tahun Prediksi')
-            ax.axhline(prediksi, color='green', linestyle=':', label='Prediksi')
+            ax.scatter(tahun_list, penjualan_list, color='blue', label='Data Aktual')
+            ax.plot(tahun_list, model.predict(X), color='green', label='Tren Regresi')
+            ax.plot(tahun_prediksi, prediksi, 'ro', label='Prediksi Tahun Depan')
+
             ax.set_xlabel("Tahun")
-            ax.set_ylabel("Jumlah Terjual (unit)")
+            ax.set_ylabel("Jumlah Penjualan")
+            ax.set_title("Prediksi Penjualan Motor")
             ax.legend()
             st.pyplot(fig)
+        else:
+            st.warning("Jumlah tahun dan data penjualan harus sama dan minimal 2 data.")
     except:
-        st.error("Pastikan input berupa angka dan dipisahkan dengan koma.")
-
-        st.pyplot(fig)
-    else:
-        st.error("Harga jual harus lebih besar dari biaya modal.")
-
+        st.error("⛔ Format input tidak sesuai. Gunakan angka dan pisahkan dengan koma.")
