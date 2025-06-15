@@ -25,10 +25,9 @@ st.sidebar.markdown(
 )
 
 # ========== MENU 1: LINEAR PROGRAMMING ==========
-
 # Dokumentasi / instruksi di sidebar
 if menu == "Optimasi Produksi (Linear Programming)":
-#Judul 
+    # Judul dan deskripsi halaman
     st.title("Optimasi Produksi Motor")
     st.write("Model Linear Programming untuk memaksimalkan keuntungan produksi dua jenis motor: Sport dan Bebek.")
 
@@ -101,6 +100,47 @@ if menu == "Optimasi Produksi (Linear Programming)":
         # Jika tidak ditemukan solusi yang feasible
         st.error("Tidak ditemukan solusi optimal. Periksa kembali input kendala.")
 
+# ========== MENU 2: EOQ ==========
+elif menu == "Model Persediaan (EOQ)":
+    st.title("Model Persediaan (EOQ)")
+
+    st.sidebar.subheader("📌 Petunjuk")
+    st.sidebar.markdown(
+        "- Masukkan data permintaan tahunan (D)\n"
+        "- Biaya pesan tiap kali order (S)\n"
+        "- Biaya simpan per unit per tahun (H)"
+    )
+
+    # Input dari user
+    D = st.number_input("Permintaan Tahunan (unit)", value=1000)
+    S = st.number_input("Biaya Pemesanan per Order (Rp)", value=50000)
+    H = st.number_input("Biaya Penyimpanan per Unit per Tahun (Rp)", value=2000)
+
+    if D > 0 and S > 0 and H > 0:
+        # Hitung EOQ menggunakan rumus klasik
+        EOQ = (2 * D * S / H) ** 0.5
+
+        # Tampilkan hasil EOQ
+        st.subheader("📦 Hasil Perhitungan EOQ")
+        st.write(f"Jumlah Pembelian Optimal (EOQ): **{EOQ:.2f} unit**")
+
+        # Visualisasi: grafik total biaya terhadap jumlah pesanan
+        import numpy as np
+        import matplotlib.pyplot as plt
+
+        Q = np.arange(1, int(2 * EOQ))  # rentang jumlah pemesanan
+        total_biaya = (D / Q) * S + (Q / 2) * H  # total biaya tahunan
+
+        fig, ax = plt.subplots()
+        ax.plot(Q, total_biaya, label='Total Biaya', color='blue')
+        ax.axvline(EOQ, color='red', linestyle='--', label='EOQ Optimal')
+        ax.set_xlabel("Jumlah Pesan per Order (Q)")
+        ax.set_ylabel("Total Biaya Tahunan (Rp)")
+        ax.set_title("Grafik EOQ - Total Biaya vs Jumlah Order")
+        ax.legend()
+        st.pyplot(fig)
+    else:
+        st.warning("Isi semua input dengan benar.")
 # ========== MENU 3: ANTRIAN M/M/1 ==========
 elif menu == "Model Antrian (M/M/1)":
     st.title("Model Antrian (M/M/1) - Produksi Motor")
@@ -202,7 +242,7 @@ elif menu == "Model Matematika Lainnya":
             # ==========================
 
             # Membuat array tahun untuk digambar di grafik (lebih rapat agar garis halus)
-            x_plot = np.linspace(min(X)-1, max(X)+2, 100)
+            x_plot = np.linspace(min(X)-1, max(X)+2, 100)a
 
             # Menghitung nilai y (penjualan) berdasarkan garis regresi
             y_plot = a + b * x_plot
