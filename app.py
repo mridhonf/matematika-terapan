@@ -242,7 +242,7 @@ elif menu == "Model Matematika Lainnya":
             # ==========================
 
             # Membuat array tahun untuk digambar di grafik (lebih rapat agar garis halus)
-            x_plot = np.linspace(min(X)-1, max(X)+2, 100)a
+            x_plot = np.linspace(min(X)-1, max(X)+2, 100)
 
             # Menghitung nilai y (penjualan) berdasarkan garis regresi
             y_plot = a + b * x_plot
