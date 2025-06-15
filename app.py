@@ -27,7 +27,8 @@ st.sidebar.markdown(
 # ========== MENU 1: LINEAR PROGRAMMING ==========
 
 # Dokumentasi / instruksi di sidebar
-if menu == "Optimasi Produksi (Linear Programming)"
+if menu == "Optimasi Produksi (Linear Programming)":
+#Judul 
     st.title("Optimasi Produksi Motor")
     st.write("Model Linear Programming untuk memaksimalkan keuntungan produksi dua jenis motor: Sport dan Bebek.")
 
