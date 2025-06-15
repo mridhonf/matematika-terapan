@@ -27,45 +27,43 @@ st.sidebar.markdown(
 # ========== MENU 1: LINEAR PROGRAMMING ==========
 # Dokumentasi / instruksi di sidebar
 if menu == "Optimasi Produksi (Linear Programming)":
-import streamlit as st
-from scipy.optimize import linprog
-
-st.title("Optimasi Produksi Motor (Linear Programming)")
-
-st.markdown("## Soal:")
-st.write("""
-Perusahaan memproduksi Motor Sport dan Motor Bebek.
-- Keuntungan: Sport = Rp 5 juta, Bebek = Rp 3 juta
-- Batasan: 180 jam perakitan, 300 unit bahan baku per minggu
-- Sport butuh: 3 jam & 5 bahan per unit
-- Bebek butuh: 2 jam & 4 bahan per unit
-""")
+    
+    st.title("Optimasi Produksi Motor (Linear Programming)")
+    
+    st.markdown("## Soal:")
+    st.write("""
+    Perusahaan memproduksi Motor Sport dan Motor Bebek.
+    - Keuntungan: Sport = Rp 5 juta, Bebek = Rp 3 juta
+    - Batasan: 180 jam perakitan, 300 unit bahan baku per minggu
+    - Sport butuh: 3 jam & 5 bahan per unit
+    - Bebek butuh: 2 jam & 4 bahan per unit
+    """)
 
 # Koefisien fungsi objektif (dikali -1 karena linprog meminimalkan)
-c = [-5, -3]  # Z = 5x + 3y → minimisasi -Z
+    c = [-5, -3]  # Z = 5x + 3y → minimisasi -Z
 
 # Koefisien dan batasan dari constraint
-A = [
-    [3, 2],  # waktu perakitan: 3x + 2y ≤ 180
-    [5, 4]   # bahan baku:      5x + 4y ≤ 300
-]
-b = [180, 300]
+    A = [
+        [3, 2],  # waktu perakitan: 3x + 2y ≤ 180
+        [5, 4]   # bahan baku:      5x + 4y ≤ 300
+        ]
+    b = [180, 300]
 
 # Batas bawah x dan y adalah 0 (tidak negatif)
-x_bounds = (0, None)
-y_bounds = (0, None)
+    x_bounds = (0, None)
+    y_bounds = (0, None)
 
 # Solusi
-res = linprog(c, A_ub=A, b_ub=b, bounds=[x_bounds, y_bounds], method='highs')
+    res = linprog(c, A_ub=A, b_ub=b, bounds=[x_bounds, y_bounds], method='highs')
 
-if res.success:
-    st.success("Solusi optimal ditemukan!")
-    x_opt, y_opt = res.x
-    st.write(f"Produksi Motor Sport: {x_opt:.0f} unit")
-    st.write(f"Produksi Motor Bebek: {y_opt:.0f} unit")
-    st.write(f"Keuntungan maksimum: Rp {(-res.fun):.2f} juta")
-else:
-    st.error("Tidak ditemukan solusi optimal.")
+    if res.success:
+        st.success("Solusi optimal ditemukan!")
+        x_opt, y_opt = res.x
+        st.write(f"Produksi Motor Sport: {x_opt:.0f} unit")
+        st.write(f"Produksi Motor Bebek: {y_opt:.0f} unit")
+        st.write(f"Keuntungan maksimum: Rp {(-res.fun):.2f} juta")
+    else:
+        st.error("Tidak ditemukan solusi optimal.")
 
 # ========== MENU 2: EOQ ==========
 elif menu == "Model Persediaan (EOQ)":
