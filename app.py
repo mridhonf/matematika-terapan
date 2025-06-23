@@ -203,7 +203,7 @@ elif menu == "Model Matematika Lainnya":
     # Formulir input data historis penjualan
     st.markdown("Masukkan data historis penjualan:")
     # Masukan Harga 1 Unit Motor
-    cost = st.text_input("Masukan harga 1 unit motor")
+    st.number_input("Masukan Harga 1 Unit Motor :", value=0)
     # Input tahun-tahun historis, dipisahkan koma
     years = st.text_input("Tahun-tahun (pisahkan dengan koma)", "2019,2020,2021,2022,2023")
 
@@ -239,7 +239,7 @@ elif menu == "Model Matematika Lainnya":
             # Menampilkan hasil prediksi ke user
             st.success(f"Prediksi permintaan untuk tahun {tahun_pred}: {prediksi:.0f} unit")
             
-            st.success(f"Total Biaya Untuk Tahun {tahun_pred} : Rp. {final_cost:.0f}")
+            st.success(f"Total Biaya Untuk Tahun {tahun_pred} : Rp. {final_cost}")
 
             # ==========================
             # Visualisasi Garis Regresi
