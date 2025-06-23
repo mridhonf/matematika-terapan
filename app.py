@@ -234,9 +234,11 @@ elif menu == "Model Matematika Lainnya":
 
             # Menghitung hasil prediksi menggunakan rumus regresi: y = a + b*x
             prediksi = a + b * tahun_pred
-
+            #Menghitung Harga Jual
+            final_cost = cost * prediksi
             # Menampilkan hasil prediksi ke user
             st.success(f"Prediksi permintaan untuk tahun {tahun_pred}: {prediksi:.0f} unit")
+            st.success(f"Total Biaya Untuk Tahun {tahun_pred} : Rp. {final_cost})
 
             # ==========================
             # Visualisasi Garis Regresi
