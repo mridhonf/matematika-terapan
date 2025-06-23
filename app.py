@@ -202,7 +202,8 @@ elif menu == "Model Matematika Lainnya":
 
     # Formulir input data historis penjualan
     st.markdown("Masukkan data historis penjualan:")
-
+    # Masukan Harga 1 Unit Motor
+    cost = st.text_input("Masukan harga 1 unit motor")
     # Input tahun-tahun historis, dipisahkan koma
     years = st.text_input("Tahun-tahun (pisahkan dengan koma)", "2019,2020,2021,2022,2023")
 
