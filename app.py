@@ -239,7 +239,7 @@ elif menu == "Model Matematika Lainnya":
             # Menampilkan hasil prediksi ke user
             st.success(f"Prediksi permintaan untuk tahun {tahun_pred}: {prediksi:.0f} unit")
             
-            st.success(f"Total Biaya Untuk Tahun {tahun_pred} : Rp. {final_cost}")
+            st.success(f"Total Biaya Untuk Tahun {tahun_pred} : Rp. {final_cost:.0f}")
 
             # ==========================
             # Visualisasi Garis Regresi
